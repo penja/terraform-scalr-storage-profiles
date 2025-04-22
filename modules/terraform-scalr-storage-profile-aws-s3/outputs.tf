@@ -14,6 +14,7 @@ output "aws_s3_audience" {
 }
 
 output "curl_command" {
+  sensitive   = true
   description = "Curl command to create a storage profile in Scalr"
   value       = <<-EOT
     curl -X POST "https://${var.scalr_account_name}.${var.scalr_hostname}/api/iacp/v3/storage-profiles" \
