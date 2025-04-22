@@ -52,8 +52,8 @@ module "aws_s3_storage_profile" {
 | iam_role_name | The name of the IAM role to create for Scalr | `string` | `"scalr-storage-profile-role"` | no |
 | force_destroy | Force destroy the S3 bucket | `bool` | `false` | no |
 | aws_region | AWS region where the resources are created | `string` | `"us-east-1"` | no |
-| storage_profile_name | Name for the storage profile in Scalr | `string` | `"aws-s3-ape-storage-profile"` | no |
-| scalr_token | Optional scalr access token for the curl request | `string` | `" put your token here"` | no |
+| storage_profile_name | Name for the storage profile in Scalr | `string` | `"aws-s3-storage-profile"` | no |
+| scalr_token | Optional Scalr access token for the curl request. For security, do not hardcode this value in your configuration. Use environment variables or other secure methods instead. | `string` | `null` | no |
 
 ## Outputs
 
@@ -68,26 +68,6 @@ module "aws_s3_storage_profile" {
 
 After applying this module, you can use the `curl_command_template` output to create the storage profile in Scalr:
 
-```bash
-# First, save the template to a file
-terraform output -raw curl_command_template > create_storage_profile.sh
-
-# Edit the file to replace YOUR_TOKEN with your actual Scalr API token
-# and YOUR_SCALR_HOSTNAME with your actual Scalr hostname
-# DO NOT commit this modified file to version control
-
-# Make the script executable
-chmod +x create_storage_profile.sh
-
-# Run the script
-./create_storage_profile.sh
-```
-
-For better security:
-1. Never hardcode your API token in your Terraform configuration
-2. Consider using environment variables to pass sensitive values
-3. Keep your tokens out of version control
-4. Rotate your tokens regularly
 
 ## Creating a Module in Scalr
 
