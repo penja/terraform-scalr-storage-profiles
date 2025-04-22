@@ -11,7 +11,7 @@ This Terraform module creates and configures AWS resources required for a Scalr 
 
 ## Requirements
 
-- AWS provider
+- Forked AWS provider (scalr/aws)
 - TLS provider
 - Random provider
 - An AWS account with appropriate permissions
@@ -21,7 +21,7 @@ This Terraform module creates and configures AWS resources required for a Scalr 
 
 ```hcl
 module "aws_s3_storage_profile" {
-  source = "github.com/scalr/terraform-scalr-storage-profiles//modules/aws-s3"
+  source = "github.com/scalr/terraform-scalr-storage-profiles//modules/terraform-scalr-storage-profile-aws-s3"
 
   bucket_name        = "my-scalr-state-bucket"
   scalr_account_name = "my-scalr-account"
@@ -29,6 +29,7 @@ module "aws_s3_storage_profile" {
   # Optional parameters
   aws_region         = "us-west-2"
   storage_profile_name = "my-custom-storage-profile"
+  scalr_token        = "your-scalr-api-token" # Optional: Token for the curl command
 }
 ```
 
@@ -47,6 +48,7 @@ module "aws_s3_storage_profile" {
 | force_destroy | Force destroy the S3 bucket | `bool` | `false` | no |
 | aws_region | AWS region where the resources are created | `string` | `"us-east-1"` | no |
 | storage_profile_name | Name for the storage profile in Scalr | `string` | `"aws-s3-ape-storage-profile"` | no |
+| scalr_token | Optional scalr access token for the curl request | `string` | `" put your token here"` | no |
 
 ## Outputs
 
@@ -62,21 +64,19 @@ module "aws_s3_storage_profile" {
 After applying this module, you can use the `curl_command` output to create the storage profile in Scalr:
 
 ```bash
-# Replace {{token}} with your Scalr API token
+# The curl command will use the token provided in the scalr_token variable
 eval $(terraform output -raw curl_command)
 ```
 
 ## Creating a Module in Scalr
 
 To use this module in Scalr, follow these steps:
-
-1. In your Scalr account, navigate to the Modules section
-2. Click "Add Module"
-3. Select "GitHub" or your preferred VCS provider
-4. Enter the repository URL: `https://github.com/scalr/terraform-scalr-storage-profiles`
-5. Select the branch (usually `main`)
-6. Set the module path to `modules/aws-s3`
-7. Click "Add Module"
+1. Fork the repository `https://github.com/scalr/terraform-scalr-storage-profiles` with tags
+2. In your Scalr account, navigate to the Modules section
+3. Click "Add Module"
+4. Select the forked repository from the list
+5. Set the module path to `modules/terraform-scalr-storage-profile-aws-s3`
+6. Click "Add Module"
 
 ## Creating a Module-Driven Workspace
 
@@ -92,9 +92,5 @@ After adding the module to Scalr, you can create a workspace based on it:
 6. Configure any optional variables as needed
 7. Click "Create Workspace"
 8. Run the workspace to create the AWS resources and storage profile
+9. Use the `curl_command` output to create the storage profile in Scalr
 
-## Security Considerations
-
-- The S3 bucket is configured with private ACL and versioning enabled
-- Server-side encryption for the S3 bucket is enabled by default
-- IAM roles follow the principle of least privilege

@@ -29,12 +29,18 @@ variable "scalr_hostname" {
 
 variable "oidc_audience_value" {
   type    = string
-  default = "aws.scalr-run-workload"
+  default = "aws.my-awsome-auidence"
 }
 
 variable "scalr_account_name" {
   type        = string
   description = "Scalr account name"
+}
+
+variable "scalr_token" {
+    type        = string
+    description = "Optional scalr access token for the curl request."
+    default     = " put your token here"
 }
 
 variable "iam_role_name" {
@@ -60,3 +66,4 @@ variable "storage_profile_name" {
   type        = string
   default     = "aws-s3-ape-storage-profile"
 }
+
