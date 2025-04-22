@@ -1,21 +1,25 @@
 output "aws_s3_bucket_name" {
-    description = "The name of the S3 bucket"
-    value       = aws_s3_bucket.storage-profile-bucket.bucket
+  description = "The name of the S3 bucket"
+  value       = aws_s3_bucket.storage-profile-bucket.bucket
 }
 
 output "aws_s3_bucket_arn" {
-    description = "The ARN of the S3 bucket"
-    value       = aws_s3_bucket.storage-profile-bucket.arn
+  description = "The ARN of the S3 bucket"
+  value       = aws_s3_bucket.storage-profile-bucket.arn
+}
+
+output "aws_iam_role_arn" {
+  description = "The ARN of the IAM role"
+  value       = aws_iam_role.tofu_backend_access.arn
 }
 
 output "aws_s3_audience" {
-    description = "The OIDC audience value for AWS S3"
-    value       = var.oidc_audience_value
+  description = "The OIDC audience value for AWS S3"
+  value       = var.oidc_audience_value
 }
 
-output "curl_command" {
-  sensitive   = false
-  description = "Curl command to create a storage profile in Scalr"
+output "curl_command_template" {
+  description = "Template for curl command to create a storage profile in Scalr (requires your own token)"
   value       = <<-EOT
     curl -X POST "https://${var.scalr_account_name}.${var.scalr_hostname}/api/iacp/v3/storage-profiles" \
       -H "Authorization: Bearer ${var.scalr_token}" \

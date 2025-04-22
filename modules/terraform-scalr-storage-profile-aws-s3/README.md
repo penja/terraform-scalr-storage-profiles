@@ -26,11 +26,15 @@ module "aws_s3_storage_profile" {
 
   bucket_name        = "my-scalr-state-bucket"
   scalr_account_name = "my-scalr-account"
+  audience_value    = "aws.my-awsone-audience-value"
 
   # Optional parameters
-  aws_region         = "us-west-2"
+  aws_region           = "us-west-2"
   storage_profile_name = "my-custom-storage-profile"
-  scalr_token        = "your-scalr-api-token" # Optional: Token for the curl command
+
+  # For security, do not hardcode tokens in your configuration
+  # Instead, use environment variables or other secure methods
+  # scalr_token = var.scalr_token
 }
 ```
 
@@ -58,16 +62,32 @@ module "aws_s3_storage_profile" {
 | aws_s3_bucket_name | The name of the S3 bucket |
 | aws_s3_bucket_arn | The ARN of the S3 bucket |
 | aws_s3_audience | The OIDC audience value for AWS S3 |
-| curl_command | Curl command to create a storage profile in Scalr |
+| curl_command_template | Template for curl command to create a storage profile in Scalr (requires your own token) |
 
 ## Creating the Storage Profile in Scalr
 
-After applying this module, you can use the `curl_command` output to create the storage profile in Scalr:
+After applying this module, you can use the `curl_command_template` output to create the storage profile in Scalr:
 
 ```bash
-# The curl command will use the token provided in the scalr_token variable
-eval $(terraform output -raw curl_command)
+# First, save the template to a file
+terraform output -raw curl_command_template > create_storage_profile.sh
+
+# Edit the file to replace YOUR_TOKEN with your actual Scalr API token
+# and YOUR_SCALR_HOSTNAME with your actual Scalr hostname
+# DO NOT commit this modified file to version control
+
+# Make the script executable
+chmod +x create_storage_profile.sh
+
+# Run the script
+./create_storage_profile.sh
 ```
+
+For better security:
+1. Never hardcode your API token in your Terraform configuration
+2. Consider using environment variables to pass sensitive values
+3. Keep your tokens out of version control
+4. Rotate your tokens regularly
 
 ## Creating a Module in Scalr
 
@@ -93,5 +113,4 @@ After adding the module to Scalr, you can create a workspace based on it:
 6. Configure any optional variables as needed
 7. Click "Create Workspace"
 8. Run the workspace to create the AWS resources and storage profile
-9. Use the `curl_command` output to create the storage profile in Scalr
-
+9. Use the `curl_command_template` output to create the storage profile in Scalr, following the security best practices described above

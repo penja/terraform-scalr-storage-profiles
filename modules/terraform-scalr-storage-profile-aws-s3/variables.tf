@@ -28,8 +28,9 @@ variable "scalr_hostname" {
 }
 
 variable "oidc_audience_value" {
-  type    = string
-  default = "aws.my-awsome-auidence"
+  type        = string
+  description = "OIDC audience value for AWS authentication"
+  default     = "aws.scalr-run-workload"
 }
 
 variable "scalr_account_name" {
@@ -39,8 +40,9 @@ variable "scalr_account_name" {
 
 variable "scalr_token" {
     type        = string
-    description = "Optional scalr access token for the curl request."
-    default     = " put your token here"
+    description = "Optional Scalr access token for the curl request. For security, do not hardcode this value in your configuration. Use environment variables or other secure methods instead."
+    default     = null
+    sensitive   = true
 }
 
 variable "iam_role_name" {
@@ -64,6 +66,5 @@ variable "aws_region" {
 variable "storage_profile_name" {
   description = "Name for the storage profile in Scalr"
   type        = string
-  default     = "aws-s3-ape-storage-profile"
+  default     = "aws-s3-storage-profile"
 }
-

@@ -25,7 +25,10 @@ module "aws_s3_storage_profile" {
   # Optional parameters
   aws_region           = "us-west-2"
   storage_profile_name = "my-custom-storage-profile"
-  scalr_token          = "your-scalr-api-token" # Optional: Token for the curl command
+
+  # For security, do not hardcode tokens in your configuration
+  # Instead, use environment variables or other secure methods
+  # scalr_token = var.scalr_token
 }
 ```
 
