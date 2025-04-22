@@ -2,6 +2,7 @@
 
 This Terraform module creates and configures AWS resources required for a Scalr storage profile using S3 and DynamoDB.
 
+
 ## Features
 
 - Creates an S3 bucket for storing Terraform/OpenTofu state files
