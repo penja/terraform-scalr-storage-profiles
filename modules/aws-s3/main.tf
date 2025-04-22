@@ -24,7 +24,15 @@ resource "aws_s3_bucket" "storage-profile-bucket" {
   }
 }
 
+resource "aws_s3_bucket_ownership_controls" "storage_profile_bucket_ownership" {
+  bucket = aws_s3_bucket.storage-profile-bucket.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
 resource "aws_s3_bucket_acl" "storage_profile_bucket_acl" {
+  depends_on = [aws_s3_bucket_ownership_controls.storage_profile_bucket_ownership]
   bucket = aws_s3_bucket.storage-profile-bucket.id
   acl    = "private"
 }
