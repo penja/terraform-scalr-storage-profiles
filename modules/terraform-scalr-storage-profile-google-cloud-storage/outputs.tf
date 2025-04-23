@@ -34,7 +34,7 @@ output "curl_command_template" {
             "name": "${var.storage_profile_name}",
             "google-storage-bucket": "${google_storage_bucket.storage-profile-bucket.name}",
             "google-project": "${var.google_project}",
-            "google-credentials": ${jsonencode(base64decode(nonsensitive(google_service_account_key.scalr_service_account_key.private_key)))}
+            "google-credentials": ${base64decode(nonsensitive(google_service_account_key.scalr_service_account_key.private_key))}
           }
         }
       }'

@@ -11,7 +11,7 @@ variable "google_project" {
 variable "google_region" {
   description = "The Google Cloud region where the bucket will be created."
   type        = string
-  default     = "US"
+  default     = "us-east1"
 }
 
 variable "scalr_hostname" {
