@@ -20,39 +20,13 @@ The Google Cloud Storage module creates and configures Google Cloud resources re
 - Service account with appropriate permissions
 - Ready-to-use curl command to create the storage profile in Scalr
 
-## Quick Start
+### [Azure Resource Manager](./modules/terraform-scalr-storage-profile-azurerm)
 
-### AWS S3
-
-```hcl
-module "aws_s3_storage_profile" {
-  source = "github.com/scalr/terraform-scalr-storage-profiles//modules/terraform-scalr-storage-profile-aws-s3"
-
-  bucket_name        = "my-scalr-state-bucket"
-  scalr_account_name = "my-scalr-account"
-
-  # Optional parameters
-  aws_region           = "us-west-2"
-  storage_profile_name = "my-custom-storage-profile"
-}
-```
-
-### Google Cloud Storage
-
-```hcl
-module "google_storage_profile" {
-  source = "github.com/scalr/terraform-scalr-storage-profiles//modules/terraform-scalr-storage-profile-google-cloud-storage"
-
-  bucket_name        = "my-scalr-state-bucket"
-  google_project     = "my-google-project"
-  scalr_account_name = "my-scalr-account"
-
-
-  # Optional parameters
-  google_region         = "US"
-  storage_profile_name  = "my-custom-storage-profile"
-}
-```
+The Azure Resource Manager module creates and configures Azure resources required for a Scalr storage profile:
+- Azure Storage Account for storing Terraform/OpenTofu state files
+- Azure Storage Container
+- Azure AD application and service principal with appropriate permissions
+- Ready-to-use curl command to create the storage profile in Scalr
 
 ## Contributing
 
