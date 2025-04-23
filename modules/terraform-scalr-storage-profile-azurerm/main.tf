@@ -38,7 +38,7 @@ resource "azuread_application" "scalr_app" {
 
 # Create a service principal for the application
 resource "azuread_service_principal" "scalr_sp" {
-   application_id = azuread_application.scalr_app.application_id
+   client_id = azuread_application.scalr_app.client_id
 }
 
 # Create a role assignment to grant the service principal access to the storage account
@@ -46,4 +46,14 @@ resource "azurerm_role_assignment" "storage_blob_contributor" {
   scope                = azurerm_storage_account.storage_profile_account.id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azuread_service_principal.scalr_sp.id
+}
+
+# Create federated credentials for each environment
+resource "azuread_application_federated_identity_credential" "scalr_federated_credentials" {
+  application_id = azuread_application.scalr_app.id
+  display_name   = "scalr-federated-credentials-${var.scalr_hostname}"
+  description    = "Federated credential for Scalr Storage Profile"
+  audiences      = [var.oidc_audience_value]
+  issuer         = "https://${var.scalr_hostname}"
+  subject        = "account:${var.scalr_account_name}"
 }

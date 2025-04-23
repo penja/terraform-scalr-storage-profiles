@@ -56,7 +56,7 @@ variable "tenant_id" {
   type        = string
 }
 
-variable "audience" {
+variable "oidc_audience_value" {
   description = "The audience value for Azure authentication"
   type        = string
   default     = "azure-rm-scalr-run-workload"

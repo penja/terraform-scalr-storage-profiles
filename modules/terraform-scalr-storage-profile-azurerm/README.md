@@ -6,6 +6,7 @@ This module creates and configures Azure resources required for a Scalr storage 
 - Azure Storage Account for storing Terraform/OpenTofu state files
 - Azure Storage Container
 - Azure AD application and service principal with appropriate permissions
+- Azure AD federated credentials for workload identity federation
 - Ready-to-use curl command to create the storage profile in Scalr
 
 ## Usage
@@ -17,15 +18,30 @@ module "azurerm_storage_profile" {
   storage_account_name = "scalrstate"
   tenant_id            = "f41d62f5-bc6a-4996-a3a1-3876f337a47b"
   scalr_account_name   = "your-scalr-account"
-  
+
   # Optional parameters
   resource_group_name  = "scalr-storage-profile-rg"
   azure_location       = "eastus"
   container_name       = "tfstate"
   storage_profile_name = "azure-rm-storage-profile"
   audience             = "azure-rm-scalr-run-workload"
+
+  # Federated credentials for workload identity federation
+  federated_credential_environments = ["dev", "prod"]
+  federated_credential_issuer       = "https://scalr.io"
 }
 ```
+
+### Federated Credentials
+
+This module supports creating federated credentials for workload identity federation. This allows Scalr to authenticate to Azure without using a client secret, which is more secure.
+
+For each environment in the `federated_credential_environments` list, a federated credential will be created with:
+- Issuer: `https://scalr.io` (configurable via `federated_credential_issuer`)
+- Subject: `account:<scalr_account_name>:environment:<environment_name>`
+- Audience: The value of the `audience` variable
+
+For example, if `scalr_account_name` is "my-corp" and `federated_credential_environments` includes "team-a-production", a federated credential will be created with subject "account:my-corp:environment:team-a-production".
 
 ## Requirements
 
@@ -57,6 +73,8 @@ module "azurerm_storage_profile" {
 | storage_profile_name | Name for the storage profile in Scalr | `string` | `"azure-rm-storage-profile"` | no |
 | tenant_id | The Azure AD tenant ID | `string` | n/a | yes |
 | audience | The audience value for Azure authentication | `string` | `"azure-rm-scalr-run-workload"` | no |
+| federated_credential_environments | List of Scalr environment names for which to create federated credentials | `list(string)` | `[]` | no |
+| federated_credential_issuer | The issuer URL for federated credentials | `string` | `"https://scalr.io"` | no |
 
 ## Outputs
 
@@ -67,4 +85,5 @@ module "azurerm_storage_profile" {
 | azure_application_id | The Application ID of the Azure AD application |
 | azure_tenant_id | The Azure AD tenant ID |
 | azure_audience | The audience value for Azure authentication |
+| azure_federated_credential_subjects | The subjects of the federated credentials created for each environment |
 | curl_command_template | Template for curl command to create a storage profile in Scalr |
