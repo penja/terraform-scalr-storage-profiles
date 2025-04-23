@@ -29,7 +29,7 @@ variable "scalr_token" {
   type        = string
   description = "Optional Scalr access token for the curl request. For security, do not hardcode this value in your configuration. Use environment variables or other secure methods instead."
   default     = null
-  sensitive   = False
+  sensitive   = false
 }
 
 variable "force_destroy" {
