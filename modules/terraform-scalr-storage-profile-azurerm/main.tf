@@ -2,6 +2,10 @@ provider "azurerm" {
   features {}
 }
 
+provider "azuread" {
+  tenant_id = var.tenant_id
+}
+
 resource "azurerm_resource_group" "storage_profile_rg" {
   name     = var.resource_group_name
   location = var.azure_location
