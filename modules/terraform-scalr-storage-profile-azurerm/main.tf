@@ -1,5 +1,5 @@
 provider "azurerm" {
-  features {}
+  tenant_id       = var.tenant_id
 }
 
 resource "azurerm_resource_group" "storage_profile_rg" {
