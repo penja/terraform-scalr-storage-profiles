@@ -22,7 +22,7 @@ output "curl_command_template" {
   description = "Template for curl command to create a storage profile in Scalr (requires your own token)"
   value       = <<-EOT
     curl -X POST "https://${var.scalr_account_name}.${var.scalr_hostname}/api/iacp/v3/storage-profiles" \
-      -H "Authorization: Bearer ${var.scalr_token}" \
+      -H "Authorization: Bearer ${nonsensitive(var.scalr_token)}" \
       -H "Content-Type: application/vnd.api+json" \
       -d '{
         "data": {
