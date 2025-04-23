@@ -20,15 +20,7 @@ output "azure_tenant_id" {
 
 output "azure_audience" {
   description = "The audience value for Azure authentication"
-  value       = var.audience
-}
-
-output "azure_federated_credential_subjects" {
-  description = "The subjects of the federated credentials created for each environment"
-  value = {
-    for env in var.federated_credential_environments :
-    env => "account:${var.scalr_account_name}:environment:${env}"
-  }
+  value       = var.oidc_audience_value
 }
 
 output "curl_command_template" {
@@ -48,7 +40,7 @@ output "curl_command_template" {
             "azurerm-container-name": "${azurerm_storage_container.storage_profile_container.name}",
             "azurerm-tenant-id": "${var.tenant_id}",
             "azurerm-client-id": "${azuread_application.scalr_app.client_id}",
-            "azurerm-audience": "${var.audience}"
+            "azurerm-audience": "${var.oidc_audience_value}",
           }
         }
       }'
