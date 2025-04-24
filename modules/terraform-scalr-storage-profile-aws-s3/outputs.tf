@@ -18,11 +18,27 @@ output "aws_s3_audience" {
   value       = var.oidc_audience_value
 }
 
+output "scalr_hostname" {
+  description = "The hostname of the Scalr server."
+  value       = var.scalr_hostname
+}
+
+output "scalr_account_name" {
+  description = "Scalr account name"
+  value       = var.scalr_account_name
+}
+
+output "scalr_token" {
+  description = "Scalr access token for the curl request."
+  value       = var.scalr_token
+  sensitive   = true
+}
+
 output "curl_command_template" {
   description = "Template for curl command to create a storage profile in Scalr (requires your own token)"
   value       = <<-EOT
-    curl -X POST "https://${module.common.scalr_account_name}.${module.common.scalr_hostname}/api/iacp/v3/storage-profiles" \
-      -H "Authorization: Bearer ${nonsensitive(module.common.scalr_token)}" \
+    curl -X POST "https://${var.scalr_account_name}.${var.scalr_hostname}/api/iacp/v3/storage-profiles" \
+      -H "Authorization: Bearer ${nonsensitive(var.scalr_token)}" \
       -H "Content-Type: application/vnd.api+json" \
       -d '{
         "data": {

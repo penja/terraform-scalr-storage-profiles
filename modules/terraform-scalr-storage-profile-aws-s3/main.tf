@@ -2,13 +2,6 @@ provider "aws" {
     region = var.aws_region
 }
 
-module "common" {
-  source = "../terraform-scalr-storage-profile-common"
-
-  scalr_account_name = var.scalr_account_name
-  scalr_token        = var.scalr_token
-  scalr_hostname     = var.scalr_hostname
-}
 
 resource "random_string" "names_suffix" {
   count   = var.dynamodb_table_name == null ? 1 : 0
@@ -93,7 +86,7 @@ resource "aws_dynamodb_table" "bucket_locks" {
 }
 
 data "tls_certificate" "scalr_te" {
-  url = "https://${module.common.scalr_hostname}"
+  url = "https://${var.scalr_hostname}"
 }
 
 resource "aws_iam_openid_connect_provider" "scalr_te" {
@@ -112,17 +105,17 @@ data "aws_iam_policy_document" "assume_from_scalr" {
     }
     condition {
       test     = "StringLike"
-      variable = "${module.common.scalr_hostname}:sub"
+      variable = "${var.scalr_hostname}:sub"
       values = [
         format(
           "scalr:account:%s",
-          module.common.scalr_account_name
+          var.scalr_account_name
         )
       ]
     }
     condition {
       test     = "StringEquals"
-      variable = "${module.common.scalr_hostname}:aud"
+      variable = "${var.scalr_hostname}:aud"
       values = [
         var.oidc_audience_value
       ]

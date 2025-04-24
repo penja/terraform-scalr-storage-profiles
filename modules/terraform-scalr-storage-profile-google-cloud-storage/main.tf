@@ -2,13 +2,6 @@ provider "google" {
 
 }
 
-module "common" {
-  source = "../terraform-scalr-storage-profile-common"
-
-  scalr_account_name = var.scalr_account_name
-  scalr_token        = var.scalr_token
-  scalr_hostname     = var.scalr_hostname
-}
 
 resource "google_storage_bucket" "storage-profile-bucket" {
   name          = var.bucket_name

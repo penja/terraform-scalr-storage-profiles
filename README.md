@@ -5,9 +5,6 @@ This repository contains Terraform modules for creating and configuring storage 
 
 ## Available Modules
 
-### [Common](./modules/terraform-scalr-storage-profile-common)
-
-The Common module contains shared variables used by all the storage profile modules. This module is used internally by the other modules and doesn't need to be used directly.
 
 ### [AWS S3](./modules/terraform-scalr-storage-profile-aws-s3)
 
