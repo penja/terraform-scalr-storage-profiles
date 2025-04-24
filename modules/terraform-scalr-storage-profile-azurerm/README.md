@@ -49,7 +49,7 @@ To set up an Azure AD application with federated credentials for use with this m
    - Select "Other issuer" as the federated credential scenario.
    - Enter the following details:
      - Issuer: `https://<scalr_hostname>` (default: `https://scalr.io`)
-     - Subject identifier: `account:<scalr_account_name>` (replace `<scalr_account_name>` with your Scalr account name)
+     - Subject identifier: `scalr:account:<scalr_account_name>` (replace `<scalr_account_name>` with your Scalr account name)
      - Name: A descriptive name for the credential (e.g., "Scalr-Federated-Credential")
      - Audience: The value you'll use for the `oidc_audience_value` variable (default: `azure-rm-scalr-run-workload`)
    - Click "Add".
