@@ -56,7 +56,7 @@ To set up an Azure AD application with federated credentials for use with this m
    - 
 
 4. **Grant Storage Blob Data Contributor Access**:
-   - After running this module to create the storage account, you'll need to grant the service principal access to the storage account.
+   - After running this module to create the storage account https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Storage%2FStorageAccounts, you'll need to grant the service principal access to the storage account. 
    - In the Azure Portal, navigate to the storage account created by this module.
    - Go to Access Control (IAM) > Add > Add role assignment.
    - Select the "Storage Blob Data Contributor" role.
