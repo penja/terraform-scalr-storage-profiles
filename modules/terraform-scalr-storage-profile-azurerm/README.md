@@ -53,25 +53,21 @@ To set up an Azure AD application with federated credentials for use with this m
      - Name: A descriptive name for the credential (e.g., "Scalr-Federated-Credential")
      - Audience: The value you'll use for the `oidc_audience_value` variable (default: `azure-rm-storage-profie`)
    - Click "Add".
-
-   ![Azure AD Federated Credentials](placeholder-for-azure-ad-federated-credentials-screenshot.png)
+   - 
 
 4. **Grant Storage Blob Data Contributor Access**:
-   - By default, this module automatically grants the service principal "Storage Blob Data Contributor" access to the storage account.
-   - If you prefer to manage permissions manually, you can set `create_role_assignment = false` in the module configuration.
-   - To grant permissions manually:
-     - In the Azure Portal, navigate to the storage account created by this module.
-     - Go to Access Control (IAM) > Add > Add role assignment.
-     - Select the "Storage Blob Data Contributor" role.
-     - Assign access to "User, group, or service principal".
-     - Search for and select the service principal you created.
-     - Click "Review + assign".
+   - After running this module to create the storage account, you'll need to grant the service principal access to the storage account.
+   - In the Azure Portal, navigate to the storage account created by this module.
+   - Go to Access Control (IAM) > Add > Add role assignment.
+   - Select the "Storage Blob Data Contributor" role.
+   - Assign access to "User, group, or service principal".
+   - Search for and select the service principal you created.
+   - Click "Review + assign".
 
 5. **Configure Scalr Storage Profile**:
    - After running this module, use the `curl_command_template` output to create a storage profile in Scalr.
    - Ensure you replace the token placeholder with your actual Scalr API token.
 
-   ![Scalr Storage Profile](placeholder-for-scalr-storage-profile-screenshot.png)
 
 ## Requirements
 
@@ -85,7 +81,6 @@ To set up an Azure AD application with federated credentials for use with this m
 | Name | Version |
 |------|---------|
 | azurerm | >= 3.0.0 |
-| azuread | >= 2.0.0 |
 
 ## Inputs
 
@@ -103,7 +98,6 @@ To set up an Azure AD application with federated credentials for use with this m
 | tenant_id | The Azure AD tenant ID | `string` | n/a | yes |
 | oidc_audience_value | The audience value for Azure authentication | `string` | `"azure-rm-scalr-run-workload"` | no |
 | existing_storage_profile_application_id | Existing Azure AD application client ID to use for the storage profile | `string` | n/a | yes |
-| create_role_assignment | Whether to create a role assignment to grant the service principal Storage Blob Data Contributor access to the storage account | `bool` | `true` | no |
 
 ## Outputs
 

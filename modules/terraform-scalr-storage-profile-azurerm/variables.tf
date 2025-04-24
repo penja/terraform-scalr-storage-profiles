@@ -66,9 +66,3 @@ variable "existing_storage_profile_application_id" {
   description = "Existing Azure AD application client ID to use for the storage profile"
   type        = string
 }
-
-variable "create_role_assignment" {
-  description = "Whether to create a role assignment to grant the service principal Storage Blob Data Contributor access to the storage account"
-  type        = bool
-  default     = true
-}
