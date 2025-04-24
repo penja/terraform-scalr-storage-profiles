@@ -2,6 +2,14 @@ provider "azurerm" {
   features {}
 }
 
+module "common" {
+  source = "../terraform-scalr-storage-profile-common"
+
+  scalr_account_name = var.scalr_account_name
+  scalr_token        = var.scalr_token
+  scalr_hostname     = var.scalr_hostname
+}
+
 resource "azurerm_resource_group" "storage_profile_rg" {
   name     = var.resource_group_name
   location = var.azure_location
