@@ -51,9 +51,8 @@ To set up an Azure AD application with federated credentials for use with this m
      - Issuer: `https://<scalr_hostname>` (default: `https://scalr.io`)
      - Subject identifier: `account:<scalr_account_name>` (replace `<scalr_account_name>` with your Scalr account name)
      - Name: A descriptive name for the credential (e.g., "Scalr-Federated-Credential")
-     - Audience: The value you'll use for the `oidc_audience_value` variable (default: `azure-rm-storage-profie`)
+     - Audience: The value you'll use for the `oidc_audience_value` variable (default: `azure-rm-scalr-run-workload`)
    - Click "Add".
-   - 
 
 4. **Grant Storage Blob Data Contributor Access**:
    - After running this module to create the storage account https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Storage%2FStorageAccounts, you'll need to grant the service principal access to the storage account. 
@@ -108,4 +107,7 @@ To set up an Azure AD application with federated credentials for use with this m
 | azure_application_id | The Application ID of the Azure AD application |
 | azure_tenant_id | The Azure AD tenant ID |
 | azure_audience | The audience value for Azure authentication |
+| scalr_hostname | The hostname of the Scalr server |
+| scalr_account_name | Scalr account name |
+| scalr_token | Scalr access token for the curl request (sensitive) |
 | curl_command_template | Template for curl command to create a storage profile in Scalr |

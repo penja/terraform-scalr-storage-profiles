@@ -40,7 +40,7 @@ module "google_storage_profile" {
 | force_destroy | Force destroy the Google Cloud Storage bucket | `bool` | `false` | no |
 | storage_profile_name | Name for the storage profile in Scalr | `string` | `"google-cloud-storage-profile"` | no |
 | enable_versioning | Enable versioning for Google Cloud Storage bucket | `bool` | `true` | no |
-| google_region | The Google Cloud region where the bucket will be created | `string` | `"US"` | no |
+| google_region | The Google Cloud region where the bucket will be created | `string` | `"us-east1"` | no |
 | scalr_token | Optional Scalr access token for the curl request. For security, do not hardcode this value in your configuration. Use environment variables or other secure methods instead. | `string` | `null` | no |
 
 ## Outputs
@@ -51,6 +51,9 @@ module "google_storage_profile" {
 | google_storage_bucket_url | The URL of the Google Cloud Storage bucket |
 | google_service_account_email | The email of the service account |
 | google_service_account_key | The service account key (sensitive) |
+| scalr_hostname | The hostname of the Scalr server |
+| scalr_account_name | Scalr account name |
+| scalr_token | Scalr access token for the curl request (sensitive) |
 | curl_command_template | Template for curl command to create a storage profile in Scalr (requires your own token) |
 
 ## Creating the Storage Profile in Scalr

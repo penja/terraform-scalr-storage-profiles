@@ -26,7 +26,7 @@ module "aws_s3_storage_profile" {
 
   bucket_name        = "my-scalr-state-bucket"
   scalr_account_name = "my-scalr-account"
-  audience_value    = "aws.my-awsone-audience-value"
+  oidc_audience_value = "aws.my-awsone-audience-value"
 
   # Optional parameters
   aws_region           = "us-west-2"
@@ -61,12 +61,16 @@ module "aws_s3_storage_profile" {
 |------|-------------|
 | aws_s3_bucket_name | The name of the S3 bucket |
 | aws_s3_bucket_arn | The ARN of the S3 bucket |
+| aws_iam_role_arn | The ARN of the IAM role |
 | aws_s3_audience | The OIDC audience value for AWS S3 |
+| scalr_hostname | The hostname of the Scalr server |
+| scalr_account_name | Scalr account name |
+| scalr_token | Scalr access token for the curl request (sensitive) |
 | curl_command_template | Template for curl command to create a storage profile in Scalr (requires your own token) |
 
 ## Creating the Storage Profile in Scalr
 
-After applying this module, you can use the `curl_command_template` output to create the storage profile in Scalr:
+After applying this module, you can use the `curl_command_template` output to create the storage profile in Scalr. This command will create a storage profile in your Scalr account using the AWS S3 backend.
 
 
 ## Creating a Module in Scalr
