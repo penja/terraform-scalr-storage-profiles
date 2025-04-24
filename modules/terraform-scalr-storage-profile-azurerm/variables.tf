@@ -41,7 +41,7 @@ variable "scalr_account_name" {
 variable "scalr_token" {
   type        = string
   description = "Optional Scalr access token for the curl request. For security, do not hardcode this value in your configuration. Use environment variables or other secure methods instead."
-  default     = null
+  default     = "Super secret token"
   sensitive   = true
 }
 
@@ -60,4 +60,15 @@ variable "oidc_audience_value" {
   description = "The audience value for Azure authentication"
   type        = string
   default     = "azure-rm-scalr-run-workload"
+}
+
+variable "existing_storage_profile_application_id" {
+  description = "Existing Azure AD application client ID to use for the storage profile"
+  type        = string
+}
+
+variable "create_role_assignment" {
+  description = "Whether to create a role assignment to grant the service principal Storage Blob Data Contributor access to the storage account"
+  type        = bool
+  default     = true
 }

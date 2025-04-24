@@ -10,7 +10,7 @@ output "azure_storage_container_name" {
 
 output "azure_application_id" {
   description = "The Application ID of the Azure AD application"
-  value       = azuread_application.scalr_app.client_id
+  value       = var.existing_storage_profile_application_id
 }
 
 output "azure_tenant_id" {
@@ -39,7 +39,7 @@ output "curl_command_template" {
             "azurerm-storage-account": "${azurerm_storage_account.storage_profile_account.name}",
             "azurerm-container-name": "${azurerm_storage_container.storage_profile_container.name}",
             "azurerm-tenant-id": "${var.tenant_id}",
-            "azurerm-client-id": "${azuread_application.scalr_app.client_id}",
+            "azurerm-client-id": "${var.existing_storage_profile_application_id}",
             "azurerm-audience": "${var.oidc_audience_value}",
           }
         }
