@@ -25,13 +25,6 @@ variable "scalr_account_name" {
   description = "Scalr account name. This variable is passed to the common module."
 }
 
-variable "scalr_token" {
-  type        = string
-  description = "Optional Scalr access token for the curl request. This variable is passed to the common module. For security, do not hardcode this value in your configuration. Use environment variables or other secure methods instead."
-  default     = null
-  sensitive   = true
-}
-
 variable "force_destroy" {
   description = "Force destroy the Google Cloud Storage bucket"
   type        = bool

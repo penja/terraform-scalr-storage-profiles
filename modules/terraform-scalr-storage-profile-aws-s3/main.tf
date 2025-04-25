@@ -1,7 +1,6 @@
 provider "aws" {
-    region = var.aws_region
+  region = var.aws_region
 }
-
 
 resource "random_string" "names_suffix" {
   count   = var.dynamodb_table_name == null ? 1 : 0
@@ -12,17 +11,17 @@ resource "random_string" "names_suffix" {
 
 locals {
   bucket_name         = var.bucket_name
-  dynamodb_table_name = var.dynamodb_table_name != null ? var.dynamodb_table_name : "tf-locks-${random_string.names_suffix[0].id}"
+  dynamodb_table_name = (var.dynamodb_table_name != null ?
+    var.dynamodb_table_name : "tf-locks-${random_string.names_suffix[0].id}"
+  )
+  oidc_provider_arn = data.external.check_oidc.result.exists == "true" ? data.external.check_oidc.result.arn : aws_iam_openid_connect_provider.new[0].arn
 }
 
 resource "aws_s3_bucket" "storage-profile-bucket" {
-  bucket = local.bucket_name
+  bucket        = local.bucket_name
   force_destroy = var.force_destroy
 
-  tags = {
-    Name        = "TofuStateBucket"
-    Environment = "dev"
-  }
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_ownership_controls" "storage_profile_bucket_ownership" {
@@ -79,29 +78,36 @@ resource "aws_dynamodb_table" "bucket_locks" {
     enabled        = true
   }
 
-  tags = {
-    Name        = "TofuLockTable"
-    Environment = "dev"
-  }
+  tags = var.tags
 }
 
-data "tls_certificate" "scalr_te" {
+data "tls_certificate" "scalr" {
   url = "https://${var.scalr_hostname}"
 }
 
-resource "aws_iam_openid_connect_provider" "scalr_te" {
-  url             = data.tls_certificate.scalr_te.url
-  client_id_list  = [var.oidc_audience_value]
-  thumbprint_list = [data.tls_certificate.scalr_te.certificates[0].sha1_fingerprint]
+data "external" "check_oidc" {
+  program = ["bash", "${path.module}/check_oidc.sh", var.scalr_hostname]
+}
+
+# Create new OIDC provider only if it doesn't exist
+resource "aws_iam_openid_connect_provider" "new" {
+  count = data.external.check_oidc.result.exists == "true" ? 0 : 1
+  url   = "https://${var.scalr_hostname}"
+
+  client_id_list = [
+    var.oidc_audience_value
+  ]
+
+  thumbprint_list = [data.tls_certificate.scalr.certificates[0].sha1_fingerprint]
 }
 
 data "aws_iam_policy_document" "assume_from_scalr" {
   statement {
-    sid     = "AllowScalrOIDCAccess"
+    sid = "AllowScalrOIDCAccess"
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
-      type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.scalr_te.arn]
+      type = "Federated"
+      identifiers = [local.oidc_provider_arn]
     }
     condition {
       test     = "StringLike"
@@ -120,7 +126,6 @@ data "aws_iam_policy_document" "assume_from_scalr" {
         var.oidc_audience_value
       ]
     }
-
   }
 }
 

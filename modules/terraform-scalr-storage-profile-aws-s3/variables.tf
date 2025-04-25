@@ -1,7 +1,14 @@
+variable "scalr_account_name" {
+  type        = string
+  description = "Scalr account name. This variable is passed to the common module."
+}
+
 variable "bucket_name" {
   description = "The name of the s3 storage bucket to use for the blob backend."
   type        = string
 }
+
+# --- Optional inputs section
 
 variable "dynamodb_table_name" {
   description = "Custom DynamoDB table name. If not provided, 'tf-locks' name with random suffix will be used."
@@ -33,18 +40,6 @@ variable "oidc_audience_value" {
   default     = "aws.scalr-run-workload"
 }
 
-variable "scalr_account_name" {
-  type        = string
-  description = "Scalr account name. This variable is passed to the common module."
-}
-
-variable "scalr_token" {
-    type        = string
-    description = "Optional Scalr access token for the curl request. This variable is passed to the common module. For security, do not hardcode this value in your configuration. Use environment variables or other secure methods instead."
-    default     = null
-    sensitive   = true
-}
-
 variable "iam_role_name" {
   description = "The name of the IAM role to create for Scalr."
   type        = string
@@ -67,4 +62,12 @@ variable "storage_profile_name" {
   description = "Name for the storage profile in Scalr"
   type        = string
   default     = "aws-s3-storage-profile"
+}
+
+variable "tags" {
+  type = map(string)
+  default = {
+    Name        = "TofuLockTable"
+    Environment = "dev"
+  }
 }

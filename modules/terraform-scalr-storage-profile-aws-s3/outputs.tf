@@ -18,41 +18,55 @@ output "aws_s3_audience" {
   value       = var.oidc_audience_value
 }
 
-output "scalr_hostname" {
-  description = "The hostname of the Scalr server."
-  value       = var.scalr_hostname
+locals {
+  scalr_cli_command_template = <<-EOT
+    scalr create-storage-profile \
+      --name "${var.storage_profile_name}" \
+      --backend-type aws-s3 \
+      --aws-s3-bucket-name "${aws_s3_bucket.storage-profile-bucket.bucket}" \
+      --aws-s3-audience "${var.oidc_audience_value}" \
+      --aws-s3-region "${var.aws_region}" \
+      --aws-s3-role-arn "${aws_iam_role.tofu_backend_access.arn}" \
+      --default true
+  EOT
 }
 
-output "scalr_account_name" {
-  description = "Scalr account name"
-  value       = var.scalr_account_name
-}
-
-output "scalr_token" {
-  description = "Scalr access token for the curl request."
-  value       = var.scalr_token
-  sensitive   = true
-}
-
-output "curl_command_template" {
-  description = "Template for curl command to create a storage profile in Scalr (requires your own token)"
+output "scalr_cli_instructions" {
+  description = "Instructions for installing and configuring the Scalr CLI"
   value       = <<-EOT
-    curl -X POST "https://${var.scalr_account_name}.${var.scalr_hostname}/api/iacp/v3/storage-profiles" \
-      -H "Authorization: Bearer ${nonsensitive(var.scalr_token)}" \
-      -H "Content-Type: application/vnd.api+json" \
-      -d '{
-        "data": {
-          "type": "storage-profiles",
-          "attributes": {
-            "backend-type": "aws-s3",
-            "aws-s3-bucket-name": "${aws_s3_bucket.storage-profile-bucket.bucket}",
-            "aws-s3-audience": "${var.oidc_audience_value}",
-            "aws-s3-region": "${var.aws_region}",
-            "aws-s3-role-arn": "${aws_iam_role.tofu_backend_access.arn}",
-            "default": true,
-            "name": "${var.storage_profile_name}"
-          }
-        }
-      }'
+    # Installation and Configuration Instructions for Scalr CLI
+
+    ## 1. Install Scalr CLI (optional, skip if insalled already)
+    # For macOS and Linux:
+    # 1. Download the appropriate binary from https://github.com/Scalr/scalr-cli/releases
+    #    For macOS, choose the darwin-amd64 or darwin-arm64 version
+    #    For Linux, choose the linux-amd64 version
+    # 2. Make it executable:
+    chmod +x scalr
+    # 3. Move it to a directory in your PATH:
+    sudo mv scalr /usr/local/bin/
+    # 4. For macOS only: If you see a security warning, you need to:
+    #    a. Open System Settings > Privacy & Security
+    #    b. Click "Allow Anyway" next to the Scalr CLI warning
+    #    c. Run the command again and click "Open" in the security dialog
+    # 5. Verify installation:
+    scalr --version
+
+    ## 2. Configure Scalr CLI
+    # Run the configure command and follow the prompts:
+    scalr -configure
+
+    # You'll need to provide:
+    # - Scalr hostname: ${var.scalr_hostname}
+    # - Account name: ${var.scalr_account_name}
+    # - Access token: (your Scalr access token)
+
+    ## 3. Verify Configuration
+    # Test your configuration:
+    scalr ping
+
+    ## 4. Create Storage Profile
+    # After installation and configuration, you can create the storage profile using:
+    ${local.scalr_cli_command_template}
   EOT
 }
