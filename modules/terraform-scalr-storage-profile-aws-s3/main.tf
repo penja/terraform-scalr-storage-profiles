@@ -2,18 +2,8 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "random_string" "names_suffix" {
-  count   = var.dynamodb_table_name == null ? 1 : 0
-  length  = 6
-  special = false
-  upper   = false
-}
-
 locals {
   bucket_name         = var.bucket_name
-  dynamodb_table_name = (var.dynamodb_table_name != null ?
-    var.dynamodb_table_name : "tf-locks-${random_string.names_suffix[0].id}"
-  )
   oidc_provider_arn = data.external.check_oidc.result.exists == "true" ? data.external.check_oidc.result.arn : aws_iam_openid_connect_provider.new[0].arn
 }
 
@@ -55,31 +45,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "storage_profile_b
   }
 }
 
-resource "aws_dynamodb_table" "bucket_locks" {
-  name         = local.dynamodb_table_name
-  billing_mode = "PAY_PER_REQUEST"
-
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-
-  hash_key = "LockID"
-
-  dynamic "point_in_time_recovery" {
-    for_each = var.enable_dynamodb_pitr ? [1] : []
-    content {
-      enabled = true
-    }
-  }
-
-  ttl {
-    attribute_name = "TTL"
-    enabled        = true
-  }
-
-  tags = var.tags
-}
 
 data "tls_certificate" "scalr" {
   url = "https://${var.scalr_hostname}"
@@ -148,20 +113,6 @@ data "aws_iam_policy_document" "tofu_backend_permissions" {
       aws_s3_bucket.storage-profile-bucket.arn,
       "${aws_s3_bucket.storage-profile-bucket.arn}/*"
     ]
-  }
-
-  statement {
-    sid    = "DynamoDBAccess"
-    effect = "Allow"
-    actions = [
-      "dynamodb:PutItem",
-      "dynamodb:GetItem",
-      "dynamodb:DeleteItem",
-      "dynamodb:Scan",
-      "dynamodb:Query",
-      "dynamodb:UpdateItem"
-    ]
-    resources = [aws_dynamodb_table.bucket_locks.arn]
   }
 }
 

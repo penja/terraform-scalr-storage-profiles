@@ -10,23 +10,12 @@ variable "bucket_name" {
 
 # --- Optional inputs section
 
-variable "dynamodb_table_name" {
-  description = "Custom DynamoDB table name. If not provided, 'tf-locks' name with random suffix will be used."
-  type        = string
-  default     = null
-}
-
 variable "enable_s3_encryption" {
   description = "Enable server-side encryption for S3 bucket"
   type        = bool
   default     = true
 }
 
-variable "enable_dynamodb_pitr" {
-  description = "Enable Point-in-Time Recovery for DynamoDB table"
-  type        = bool
-  default     = false
-}
 
 variable "scalr_hostname" {
   type        = string
@@ -67,7 +56,7 @@ variable "storage_profile_name" {
 variable "tags" {
   type = map(string)
   default = {
-    Name        = "TofuLockTable"
+    Name        = "ScalrS3Storage"
     Environment = "dev"
   }
 }

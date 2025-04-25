@@ -1,12 +1,11 @@
 # AWS S3 Storage Profile for Scalr
 
-This Terraform module creates and configures AWS resources required for a Scalr storage profile using S3 and DynamoDB.
+This Terraform module creates and configures AWS resources required for a Scalr storage profile using S3.
 
 
 ## Features
 
 - Creates an S3 bucket for storing Terraform/OpenTofu state files
-- Sets up a DynamoDB table for state locking
 - Configures IAM roles and policies for Scalr to access these resources via OIDC
 - Automatically detects and uses existing OIDC provider or creates a new one
 - Provides a ready-to-use curl command to create the storage profile in Scalr
@@ -43,9 +42,7 @@ module "aws_s3_storage_profile" {
 |----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|--------------------------------|----------|
 | bucket_name          | The name of the s3 storage bucket to use for the blob backend                                                                                                                | `string` | n/a                            | yes      |
 | scalr_account_name   | Scalr account name                                                                                                                                                           | `string` | n/a                            | yes      |
-| dynamodb_table_name  | Custom DynamoDB table name. If not provided, 'tf-locks' name with random suffix will be used                                                                                 | `string` | `null`                         | no       |
 | enable_s3_encryption | Enable server-side encryption for S3 bucket                                                                                                                                  | `bool`   | `true`                         | no       |
-| enable_dynamodb_pitr | Enable Point-in-Time Recovery for DynamoDB table                                                                                                                             | `bool`   | `false`                        | no       |
 | scalr_hostname       | The hostname of the Scalr server                                                                                                                                             | `string` | `"scalr.io"`                   | no       |
 | oidc_audience_value  | OIDC audience value                                                                                                                                                          | `string` | `"aws.scalr-run-workload"`     | no       |
 | iam_role_name        | The name of the IAM role to create for Scalr                                                                                                                                 | `string` | `"scalr-storage-profile-role"` | no       |
