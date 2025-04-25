@@ -1,7 +1,6 @@
 provider "google" {
-
+  project = var.google_project
 }
-
 
 resource "google_storage_bucket" "storage-profile-bucket" {
   name          = var.bucket_name

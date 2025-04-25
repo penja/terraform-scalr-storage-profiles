@@ -1,7 +1,15 @@
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 4.27"
+    }
+  }
+}
+
 provider "azurerm" {
   features {}
 }
-
 
 resource "azurerm_resource_group" "storage_profile_rg" {
   name     = var.resource_group_name
@@ -28,6 +36,6 @@ resource "azurerm_storage_account" "storage_profile_account" {
 
 resource "azurerm_storage_container" "storage_profile_container" {
   name                  = var.container_name
-  storage_account_id = azurerm_storage_account.storage_profile_account.id
+  storage_account_id    = azurerm_storage_account.storage_profile_account.id
   container_access_type = "private"
 }

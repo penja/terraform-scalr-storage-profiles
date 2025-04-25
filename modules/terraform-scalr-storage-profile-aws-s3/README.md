@@ -8,6 +8,7 @@ This Terraform module creates and configures AWS resources required for a Scalr 
 - Creates an S3 bucket for storing Terraform/OpenTofu state files
 - Sets up a DynamoDB table for state locking
 - Configures IAM roles and policies for Scalr to access these resources via OIDC
+- Automatically detects and uses existing OIDC provider or creates a new one
 - Provides a ready-to-use curl command to create the storage profile in Scalr
 
 ## Requirements
@@ -17,6 +18,8 @@ This Terraform module creates and configures AWS resources required for a Scalr 
 - Random provider
 - An AWS account with appropriate permissions
 - A Scalr account
+- AWS CLI configured with appropriate permissions
+- `jq` command-line tool installed
 
 ## Usage
 
@@ -31,42 +34,48 @@ module "aws_s3_storage_profile" {
   # Optional parameters
   aws_region           = "us-west-2"
   storage_profile_name = "my-custom-storage-profile"
-
-  # For security, do not hardcode tokens in your configuration
-  # Instead, use environment variables or other secure methods
-  # scalr_token = var.scalr_token
 }
 ```
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|----------|
-| bucket_name | The name of the s3 storage bucket to use for the blob backend | `string` | n/a | yes |
-| scalr_account_name | Scalr account name | `string` | n/a | yes |
-| dynamodb_table_name | Custom DynamoDB table name. If not provided, 'tf-locks' name with random suffix will be used | `string` | `null` | no |
-| enable_s3_encryption | Enable server-side encryption for S3 bucket | `bool` | `true` | no |
-| enable_dynamodb_pitr | Enable Point-in-Time Recovery for DynamoDB table | `bool` | `false` | no |
-| scalr_hostname | The hostname of the Scalr server | `string` | `"scalr.io"` | no |
-| oidc_audience_value | OIDC audience value | `string` | `"aws.scalr-run-workload"` | no |
-| iam_role_name | The name of the IAM role to create for Scalr | `string` | `"scalr-storage-profile-role"` | no |
-| force_destroy | Force destroy the S3 bucket | `bool` | `false` | no |
-| aws_region | AWS region where the resources are created | `string` | `"us-east-1"` | no |
-| storage_profile_name | Name for the storage profile in Scalr | `string` | `"aws-s3-storage-profile"` | no |
-| scalr_token | Optional Scalr access token for the curl request. For security, do not hardcode this value in your configuration. Use environment variables or other secure methods instead. | `string` | `null` | no |
+| Name                 | Description                                                                                                                                                                  | Type     | Default                        | Required |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|--------------------------------|----------|
+| bucket_name          | The name of the s3 storage bucket to use for the blob backend                                                                                                                | `string` | n/a                            | yes      |
+| scalr_account_name   | Scalr account name                                                                                                                                                           | `string` | n/a                            | yes      |
+| dynamodb_table_name  | Custom DynamoDB table name. If not provided, 'tf-locks' name with random suffix will be used                                                                                 | `string` | `null`                         | no       |
+| enable_s3_encryption | Enable server-side encryption for S3 bucket                                                                                                                                  | `bool`   | `true`                         | no       |
+| enable_dynamodb_pitr | Enable Point-in-Time Recovery for DynamoDB table                                                                                                                             | `bool`   | `false`                        | no       |
+| scalr_hostname       | The hostname of the Scalr server                                                                                                                                             | `string` | `"scalr.io"`                   | no       |
+| oidc_audience_value  | OIDC audience value                                                                                                                                                          | `string` | `"aws.scalr-run-workload"`     | no       |
+| iam_role_name        | The name of the IAM role to create for Scalr                                                                                                                                 | `string` | `"scalr-storage-profile-role"` | no       |
+| force_destroy        | Force destroy the S3 bucket                                                                                                                                                  | `bool`   | `false`                        | no       |
+| aws_region           | AWS region where the resources are created                                                                                                                                   | `string` | `"us-east-1"`                  | no       |
+| storage_profile_name | Name for the storage profile in Scalr                                                                                                                                        | `string` | `"aws-s3-storage-profile"`     | no       |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| aws_s3_bucket_name | The name of the S3 bucket |
-| aws_s3_bucket_arn | The ARN of the S3 bucket |
-| aws_iam_role_arn | The ARN of the IAM role |
-| aws_s3_audience | The OIDC audience value for AWS S3 |
-| scalr_hostname | The hostname of the Scalr server |
-| scalr_account_name | Scalr account name |
-| scalr_token | Scalr access token for the curl request (sensitive) |
-| curl_command_template | Template for curl command to create a storage profile in Scalr (requires your own token) |
+| Name                  | Description                                                                     |
+|-----------------------|---------------------------------------------------------------------------------|
+| aws_s3_bucket_name    | The name of the S3 bucket                                                       |
+| aws_s3_bucket_arn     | The ARN of the S3 bucket                                                        |
+| aws_iam_role_arn      | The ARN of the IAM role                                                         |
+| aws_s3_audience       | The OIDC audience value for AWS S3                                              |
+| curl_command_template | Template for curl command to create a storage profile in Scalr using  scalr-cli |
+
+## OIDC Provider Handling
+
+The module automatically handles OIDC provider configuration:
+
+1. Checks for an existing OIDC provider for your Scalr hostname
+2. If found, uses the existing provider
+3. If not found, creates a new provider with the correct configuration
+4. Uses the provider's ARN for IAM role configuration
+
+This ensures seamless operation whether you're:
+- Setting up a new environment
+- Using an existing OIDC provider
+- Working with multiple Scalr instances
 
 ## Creating the Storage Profile in Scalr
 
