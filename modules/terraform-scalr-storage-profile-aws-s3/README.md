@@ -8,17 +8,7 @@ This Terraform module creates and configures AWS resources required for a Scalr 
 - Creates an S3 bucket for storing Terraform/OpenTofu state files
 - Configures IAM roles and policies for Scalr to access these resources via OIDC
 - Automatically detects and uses existing OIDC provider or creates a new one
-- Provides a ready-to-use curl command to create the storage profile in Scalr
-
-## Requirements
-
-- Forked AWS provider (scalr/aws)
-- TLS provider
-- Random provider
-- An AWS account with appropriate permissions
-- A Scalr account
-- AWS CLI configured with appropriate permissions
-- `jq` command-line tool installed
+- Provides instructions for using the Scalr CLI to create the storage profile in Scalr
 
 ## Usage
 
@@ -58,7 +48,7 @@ module "aws_s3_storage_profile" {
 | aws_s3_bucket_arn     | The ARN of the S3 bucket                                                        |
 | aws_iam_role_arn      | The ARN of the IAM role                                                         |
 | aws_s3_audience       | The OIDC audience value for AWS S3                                              |
-| curl_command_template | Template for curl command to create a storage profile in Scalr using  scalr-cli |
+| scalr_cli_instructions | Instructions for installing and configuring the Scalr CLI to create a storage profile in Scalr |
 
 ## OIDC Provider Handling
 
@@ -76,7 +66,7 @@ This ensures seamless operation whether you're:
 
 ## Creating the Storage Profile in Scalr
 
-After applying this module, you can use the `curl_command_template` output to create the storage profile in Scalr. This command will create a storage profile in your Scalr account using the AWS S3 backend.
+After applying this module, you can use the `scalr_cli_instructions` output to create the storage profile in Scalr. This output provides step-by-step instructions for installing and configuring the Scalr CLI, and then using it to create a storage profile in your Scalr account using the AWS S3 backend.
 
 
 ## Creating a Module in Scalr
@@ -97,10 +87,10 @@ After adding the module to Scalr, you can create a workspace based on it:
 2. Click "Create Workspace"
 3. Select "Module-driven" as the workspace type
 4. Choose the AWS S3 Storage Profile module you added earlier
-5. Configure the required variables:
+5. Click "Create Workspace"
+6. Configure the required variables:
    - `bucket_name`: The name of the S3 bucket to create
    - `scalr_account_name`: Your Scalr account name
-6. Configure any optional variables as needed
-7. Click "Create Workspace"
+7. Configure any optional variables as needed
 8. Run the workspace to create the AWS resources and storage profile
-9. Use the `curl_command_template` output to create the storage profile in Scalr, following the security best practices described above
+9. Use the `scalr_cli_instructions` output to create the storage profile in Scalr, following the security best practices described above

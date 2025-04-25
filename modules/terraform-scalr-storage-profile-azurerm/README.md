@@ -5,7 +5,7 @@ This module creates and configures Azure resources required for a Scalr storage 
 - Azure Resource Group
 - Azure Storage Account for storing Terraform/OpenTofu state files
 - Azure Storage Container
-- Ready-to-use curl command to create the storage profile in Scalr
+- Ready-to-use Scalr CLI instructions to create the storage profile in Scalr
 
 **Note:** This module does not create Azure AD resources. You must create an Azure AD application and set up federated credentials manually. See the "Setting Up Azure AD Federated Credentials" section below for instructions.
 
@@ -64,7 +64,7 @@ To set up an Azure AD application with federated credentials for use with this m
    - Click "Review + assign".
 
 5. **Configure Scalr Storage Profile**:
-   - After running this module, use the `curl_command_template` output to create a storage profile in Scalr.
+   - After running this module, use the `scalr_cli_instructions` output to create a storage profile in Scalr.
 
 ## Requirements
 
@@ -104,4 +104,32 @@ To set up an Azure AD application with federated credentials for use with this m
 | azure_application_id         | The Application ID of the Azure AD application                                 |
 | azure_tenant_id              | The Azure AD tenant ID                                                         |
 | azure_audience               | The audience value for Azure authentication                                    |
-| curl_command_template        | Template for curl command to create a storage profile in Scalr using scalr-cli |
+| scalr_cli_instructions | Instructions for installing and configuring the Scalr CLI to create a storage profile in Scalr |
+
+## Creating a Module in Scalr
+
+To use this module in Scalr, follow these steps:
+1. Fork the repository `https://github.com/scalr/terraform-scalr-storage-profiles` with tags
+2. In your Scalr account, navigate to the Modules section
+3. Click "Add Module"
+4. Select the forked repository from the list
+5. Set the module path to `modules/terraform-scalr-storage-profile-azurerm`
+6. Click "Add Module"
+
+## Creating a Module-Driven Workspace
+
+After adding the module to Scalr, you can create a workspace based on it:
+
+1. Navigate to the Workspaces section
+2. Click "Create Workspace"
+3. Select "Module-driven" as the workspace type
+4. Choose the Azure Resource Manager Storage Profile module you added earlier
+5. Click "Create Workspace"
+6. Configure the required variables:
+   - `storage_account_name`: The name of the Azure Storage Account to create
+   - `tenant_id`: Your Azure AD tenant ID
+   - `scalr_account_name`: Your Scalr account name
+   - `existing_storage_profile_application_id`: The Application (client) ID of your Azure AD application
+7. Configure any optional variables as needed
+8. Run the workspace to create the Azure resources and storage profile
+9. Use the `scalr_cli_instructions` output to create the storage profile in Scalr, following the security best practices described above

@@ -6,14 +6,7 @@ This Terraform module creates and configures Google Cloud resources required for
 
 - Creates a Google Cloud Storage bucket for storing Terraform/OpenTofu state files
 - Sets up a service account with appropriate permissions
-- Provides a ready-to-use curl command to create the storage profile in Scalr
-
-## Requirements
-
-- Google Cloud provider
-- TLS provider
-- A Google Cloud project with appropriate permissions
-- A Scalr account
+- Provides instructions for using the Scalr CLI to create the storage profile in Scalr
 
 ## Usage
 
@@ -48,11 +41,11 @@ module "google_storage_profile" {
 | google_storage_bucket_url    | The URL of the Google Cloud Storage bucket                                     |
 | google_service_account_email | The email of the service account                                               |
 | google_service_account_key   | The service account key (sensitive)                                            |
-| curl_command_template        | Template for curl command to create a storage profile in Scalr using scalr-cli |
+| scalr_cli_instructions | Instructions for installing and configuring the Scalr CLI to create a storage profile in Scalr |
 
 ## Creating the Storage Profile in Scalr
 
-After applying this module, you can use the `curl_command_template` output to create the storage profile in Scalr.
+After applying this module, you can use the `scalr_cli_instructions` output to create the storage profile in Scalr. This output provides step-by-step instructions for installing and configuring the Scalr CLI, and then using it to create a storage profile in your Scalr account using the Google Cloud Storage backend.
 
 ## Creating a Module in Scalr
 
@@ -72,11 +65,11 @@ After adding the module to Scalr, you can create a workspace based on it:
 2. Click "Create Workspace"
 3. Select "Module-driven" as the workspace type
 4. Choose the Google Cloud Storage Profile module you added earlier
-5. Configure the required variables:
+5. Click "Create Workspace"
+6. Configure the required variables:
    - `bucket_name`: The name of the Google Cloud Storage bucket to create
    - `google_project`: Your Google Cloud project ID
    - `scalr_account_name`: Your Scalr account name
-6. Configure any optional variables as needed
-7. Click "Create Workspace"
+7. Configure any optional variables as needed
 8. Run the workspace to create the Google Cloud resources and storage profile
-9. Use the `curl_command_template` output to create the storage profile in Scalr, following the security best practices described above
+9. Use the `scalr_cli_instructions` output to create the storage profile in Scalr, following the security best practices described above
